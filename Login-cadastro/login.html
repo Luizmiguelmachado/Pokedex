@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="fundoLoginCadastro">
+        <div class="imgProfessorCarvalho">
+            <img src="Carvalho.png" alt="">
+        </div>
+        <div style="display: flex; flex-direction: column; width: 500px;">
+            <div class="caixaDeDialogo">
+                <p style="color: brown;">Professor Carvalho</p>
+                <div id="texto"></div>
+                <br>
+                <div class="areaDeBotoes">
+                    <div class="passarPagina" onclick="cadastro()"><button>Cadastrar-se</button></div>
+                    <div class="passarPagina" onclick="login()"><button>Logar</button></div>
+                    <div class="passarPaginaInvisivel" onclick="voltar()"><button>Voltar</button></div>
+                </div>
+            </div>
+            
+            <form class="formCadastro">
+                <div class="caixaDeDialogoInvisivel cadastro" >
+                    <div class="fotoDePerfil">
+                        <img src="foto-de-perfil.png" alt="Selecionar foto">
+                        <input type="file" >
+                    </div>
+                </div>
+                <div class="caixaDeDialogoInvisivel cadastro" style="width: 100%;">
+                    <div class="campo">
+                        <label>Nickname</label>
+                        <input type="text" placeholder="Digite seu nickname" class="inputPadrao">
+                    </div>
+                    <div class="campo senhaContainer">
+                        <label>Senha</label>
+                        <div class="inputComIcone">
+                            <input type="password" id="senha" placeholder="Digite sua senha" class="inputPadrao">
+                            <button type="button" onclick="VerSenha(this)">
+                                <img src="olhoFechado.png" alt="">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="passarPagina2"><a href="../TelaPrincipal/TelaPrincipal.html">Cadastrar-se</a></div>
+                </div>
+            </form>
+            <form class="formCadastro">
+                <div class="caixaDeDialogoInvisivel login" style="width: 100%;">
+                    <div class="campo">
+                        <label>Nickname</label>
+                        <input type="text" placeholder="Digite seu nickname" class="inputPadrao">
+                    </div>
+                    <div class="campo senhaContainer">
+                        <label>Senha</label>
+                        <div class="inputComIcone">
+                            <input type="password" id="senha" placeholder="Digite sua senha" class="inputPadrao">
+                            <button type="button" onclick="VerSenha(this)">
+                                <img src="olhoFechado.png" alt="">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="passarPagina2"><a href="../TelaPrincipal/TelaPrincipal.html">Login</a></div>
+                </div>
+            </form>
+
+            <div class="informacoes">
+                <div class="caixaDeDialogoInvisivel">
+                    sim
+                </div>
+                <div class="caixaDeDialogoInvisivel">
+                    sim
+                </div>
+                <div class="caixaDeDialogoInvisivel">
+                    sim
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </div>
+    
+</body>
+
+<script>
+    let dialogo;
+    const texto = document.getElementById("texto");
+
+    let i=0;
+    dialogo = "Olá, jovem treinador! Que alegria recebê-lo na minha Pokédex! Prepare-se para embarcar em uma jornada incrível pelo mundo Pokémon. Para isso, você pode se cadastrar ou, caso já tenha uma conta, fazer o login abaixo!";
+    function escrever(){
+        if(i<dialogo.length){
+            texto.textContent += dialogo[i];
+            i++;
+            setTimeout(escrever, 50);
+        }
+    }
+    escrever();
+    
+    function cadastro(){
+        document.querySelectorAll(".passarPagina")
+        .forEach(botao => {
+            botao.classList.remove("passarPagina");
+            botao.classList.add("passarPaginaInvisivel");
+        });
+
+        document.querySelectorAll(".passarPaginaInvisivel")
+        .forEach(botao => {
+            if(botao.getAttribute("onclick") === "voltar()"){
+                botao.classList.remove("passarPaginaInvisivel");
+                botao.classList.add("passarPagina");
+            }
+        });
+
+        dialogo = "Maravilha! Um novo treinador quer se juntar a nós! Vamos criar seu registro para que você possa começar a explorar esse universo fascinante. Escolha um nickname bacana e uma senha segura - afinal, até os Pokémon mais raros precisam ser protegidos!";
+        i=0;
+        texto.textContent = "";
+        escrever();
+        
+        const cadastro = document.getElementsByClassName("cadastro");
+        for (let i = 0; i < cadastro.length; i++) {
+            cadastro[i].classList.remove("caixaDeDialogoInvisivel");
+            cadastro[i].classList.add("caixaDeDialogo");
+        }
+
+    }
+
+    function VerSenha(botao){
+        const container = botao.closest(".inputComIcone");
+        const senha = container.querySelector("input");
+        const olho = container.querySelector("img");
+
+        if(senha.type === "text"){
+            senha.type = "password";
+            olho.src = "olhoFechado.png";
+        } else {
+            senha.type = "text";
+            olho.src = "olhoAberto.png";
+        }
+    }
+
+    function login(){
+        dialogo = "Olá, jovem treinador! Que alegria recebê-lo na minha Pokédex! Prepare-se para embarcar em uma jornada incrível pelo mundo Pokémon. Para isso, você pode se cadastrar ou, caso já tenha uma conta, fazer o login abaixo!";
+        i=0;
+        texto.textContent = "";
+        escrever();
+
+        const login = document.getElementsByClassName("login");
+        for (let i = 0; i < login.length; i++) {
+            login[i].classList.remove("caixaDeDialogoInvisivel");
+            login[i].classList.add("caixaDeDialogo");
+        }
+        
+        document.querySelectorAll(".passarPagina")
+        .forEach(botao => {
+            botao.classList.remove("passarPagina");
+            botao.classList.add("passarPaginaInvisivel");
+        });
+
+        document.querySelectorAll(".passarPaginaInvisivel")
+        .forEach(botao => {
+            if(botao.getAttribute("onclick") === "voltar()"){
+                botao.classList.remove("passarPaginaInvisivel");
+                botao.classList.add("passarPagina");
+            }
+        });
+
+    }
+
+    function informacao(){
+        
+    }
+
+    function voltar(){
+        dialogo = "Seja muito bem-vindo à sua Pokédex — que esta seja a porta de entrada para o incrível mundo Pokémon, onde cada descoberta fortalece seu conhecimento e cada nova aventura marca o início de algo extraordinário.";
+        i=0;
+        texto.textContent = "";
+        escrever();
+
+        const login = document.getElementsByClassName("login");
+        for (let i = 0; i < login.length; i++) {
+            login[i].classList.remove("caixaDeDialogo");
+            login[i].classList.add("caixaDeDialogoInvisivel");
+        }
+        const cadastro = document.getElementsByClassName("cadastro");
+        for (let i = 0; i < cadastro.length; i++) {
+            cadastro[i].classList.remove("caixaDeDialogo");
+            cadastro[i].classList.add("caixaDeDialogoInvisivel");
+        }
+
+        document.querySelectorAll(".passarPaginaInvisivel")
+        .forEach(botao => {
+            botao.classList.remove("passarPaginaInvisivel");
+            botao.classList.add("passarPagina");
+        });
+
+        document.querySelectorAll(".passarPagina")
+        .forEach(botao => {
+            if(botao.getAttribute("onclick") === "voltar()"){
+                botao.classList.remove("passarPagina");
+                botao.classList.add("passarPaginaInvisivel");
+            }
+        });
+    }
+</script>
+
+</html>
