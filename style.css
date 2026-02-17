@@ -1,0 +1,227 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* FUNDO LOGIN/CADASTRO */
+.fundoLoginCadastro, .fundoPrincipal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    min-height: 100vh;
+    padding: 3%;
+    background: linear-gradient(135deg, #4a90e2, rgb(102, 0, 128));
+    box-sizing: border-box;
+}
+
+.fundoPrincipal {
+    flex-direction: column;
+}
+
+.caixaDeDialogo, .filtros{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    padding: 2%;
+    margin-bottom: 15px;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1),   /* sombra principal suave */
+        0 8px 20px rgba(0, 0, 0, 0.15);
+
+    min-height: 180px;
+    
+}
+.filtros{
+    flex-direction: row;
+    gap: 15px;
+    min-height: auto; 
+    width: 100%; 
+    max-width: 1000px; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 0px; 
+    cursor: pointer;
+}
+
+.caixaDeDialogoInvisivel{
+    display: none;
+}
+
+.imgProfessorCarvalho {
+    flex-shrink: 0;
+}
+
+.imgProfessorCarvalho img{
+    width: 200px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+
+.areaDeBotoes{
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.passarPagina button {
+    all: unset;
+    padding: 10px 20px;
+    background-color: #e3350d;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.passarPagina button:hover,.passarPagina2 a:hover{
+    background-color: #b52a0a;
+}
+
+.passarPagina2 a{
+    all: unset;
+    padding: 10px 20px;
+    background-color: #e3350d;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.passarPagina2 {
+    margin-top: 15px;
+}
+
+.passarPagina {
+    display: flex;
+}
+
+.passarPaginaInvisivel{
+    display: none;
+}
+
+.formCadastro {
+    display: flex;
+    
+    gap: 15px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+.inputPadrao {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    transition: 0.2s ease;
+}
+.inputPadrao:focus {
+    outline: none;
+    border-color: #e3350d;
+    box-shadow: 0 0 5px rgba(227, 53, 13, 0.4);
+}
+
+.inputComIcone {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.inputComIcone input {
+    width: 100%;
+    padding-right: 40px;
+}
+.inputComIcone button {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.inputComIcone img {
+    width: 20px;
+    height: 20px;
+}
+.fotoDePerfil{
+    background-color: red;
+}
+.fotoDePerfil{
+    display: flex;
+    border-radius: 100%;
+    width: 15vw;
+}
+.fotoDePerfil img, .fotoDePerfil input{
+    position: relative;
+    border-radius: 100%;
+    width: 15vw;
+    height: auto;
+}
+.fotoDePerfil input{
+    right: 100%;
+    opacity: 0;
+    cursor: pointer
+}
+
+.logo{
+    width: 50px;
+    height: auto;
+}
+
+.cabecalho .btn {
+    margin-left: auto;
+}
+
+.offcanvas-body .fotoDePerfil, .offcanvas-body .fotoDePerfil img{
+    width: auto;
+    height: 15vw;
+}
+.offcanvas-body{
+    display: flex;
+    justify-content: center;
+}
+.minha-navbar {
+    background-color: #1f3c88;
+}
+
+.boxPokemon {
+    width: 260px;
+    height: auto;
+    padding: 20px;
+    border-radius: 20px;
+
+    background: linear-gradient(145deg, #ff4d4d, #cc0000);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.25),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.pokemonimagem {
+    width: 180px;
+    height: auto;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4));
+}
+
+.nome {
+    color: white;
+}
+
+/*fazer captura de pokemon*/
+
+
