@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<style>
+    .search-box .input-group {
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: 0.3s ease;
+    }
+
+    .search-box input {
+        padding: 12px 16px;
+    }
+
+    .search-box button {
+        border-radius: 0 5px 5px 0;
+    }
+
+    .search-box {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .sugestoes {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        z-index: 1000;
+    }
+
+    .itemSugestao {
+        padding: 10px 15px;
+        cursor: pointer;
+        text-transform: capitalize;
+    }
+
+    .itemSugestao:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown-menu{
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    
+    <nav class="navbar fixed-top minha-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="Pokédex_logo.png" class="logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Configurações</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body ">
+                <div class="fotoDePerfil">
+                    <img src="../Login-cadastro/foto-de-perfil.png" alt="Selecionar foto">
+                </div>
+            </div>
+            </div>
+        </div>
+    </nav>
+    <div class="fundoPrincipal" style="padding-top: 100px;">
+        <form class="search-box d-flex" id="formBusca" role="search">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-0">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input class="form-control border-0 shadow-none" id="busca" type="search" placeholder="Pesquisar..." aria-label="Search"/>
+                <button class="btn btn-primary px-4" type="submit">
+                    Buscar
+                </button>
+            </div>
+            <div class="sugestoes"></div>
+
+        </form>
+        <div class="filtros">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group" role="group">
+                    <button type="button" onclick="mostrarTipos()" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Tipo
+                    </button class="escolherTipos">
+                    <ul class="dropdown-menu">
+                    </ul>
+                </div>
+            </div>
+            <button onclick="mostrarShiny()">shiny</button>
+        </div>
+        <div class="caixaDeDialogo" style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; max-width: 1000px; align-items: center;">
+        </div>
+        <div class="filtros" onclick="mostrarMais()">
+            <button type="button" style="width: 100%; all: unset; padding: 2%;">
+                <i class="bi bi-plus-circle" style="font-size: 40px;"></i>
+            </button>
+        </div>
+    </div>
+</body>
+
+<script>
+    const form = document.getElementById("formBusca");
+    const busca = document.getElementById("busca");
+    const div = document.querySelector(".caixaDeDialogo");
+
+    let inicio = 1, fim = 12;
+    let shiny = false, botaoShiny = false;
+
+    const cachePokemon = {};
+    let listaPokemons = [];
+    let listaTipos = [];
+
+    async function carregarTipos(){
+        if(listaTipos.length === 0){
+            const resposta =  await fetch("https://pokeapi.co/api/v2/type?limit=100000&offset=0");
+            const dados = await resposta.json();
+            listaTipos = dados.results;
+        }
+    }
+    carregarTipos();
+
+    function mostrarTipos(){
+        const caixaTipos = document.querySelector(".dropdown-menu");
+        caixaTipos.innerHTML = "";
+        for(let i = 0; i<listaTipos.length; i++){
+            caixaTipos.innerHTML+= `<li><a class="dropdown-item" onclick="filtroTipos()" href="#">${listaTipos[i].name}</a></li>`;
+        }
+    }
+
+    async function carregarListaNomes() {
+        const resposta = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0");
+        const dados = await resposta.json();
+        listaPokemons = dados.results;
+    }
+    carregarListaNomes();
+
+    busca.addEventListener("input", function() {
+        const valor = busca.value.toLowerCase().trim();
+        mostrarSugestoes(valor);
+    });
+
+    function mostrarSugestoes(valor) {
+
+        const caixaSugestoes = document.querySelector(".sugestoes");
+
+        caixaSugestoes.innerHTML = "";
+
+        const filtrados = listaPokemons
+            .filter(p => p.name.startsWith(valor))
+            .slice(0, 8);
+
+        let html = "";
+
+        for (const pokemon of filtrados) {
+            html += `
+                <div class="itemSugestao" onclick="selecionarPokemon('${pokemon.name}')">
+                    ${pokemon.name}
+                </div>
+            `;
+        }
+
+        caixaSugestoes.innerHTML = html;
+    }
+
+    function selecionarPokemon(nome) {
+        busca.value = nome;
+        document.querySelector(".sugestoes").innerHTML = "";
+        Pesquisa(nome);
+    }
+
+    document.addEventListener("click", function(e){
+        if (!e.target.closest(".search-box")) {
+            document.querySelector(".sugestoes").innerHTML = "";
+        }
+    });
+
+    form.addEventListener("submit", function(event){
+        event.preventDefault();
+        
+        resultado = busca.value.trim().toLowerCase();
+        Pesquisa(resultado);
+    });
+    async function Pesquisa(id) {
+        div.innerHTML = "";
+        if (id === "") {
+            CriarBoxPokemon();
+            return;
+        }
+
+        try {
+            let pokemon;
+            inicio = 1, fim = 12;
+
+            if (cachePokemon[id]) {
+                pokemon = cachePokemon[id];
+            } else {
+                pokemon = await Pokemon(id);
+            }
+
+            if (!pokemon) {
+                throw new Error("Pokémon não encontrado");
+            }
+
+            const nome = pokemon.name;
+            const imagem = pokemon.sprites.front_default;
+
+            div.innerHTML = `
+                <div class="boxPokemon">
+                    <img src="${imagem}" alt="${nome}" class="pokemonimagem">
+                    <p class="nome">${nome}</p>
+                </div>
+            `;
+
+        } catch (erro) {
+            div.innerHTML = `
+                <div class="boxPokemon">
+                    <img src="../naoencontrado.png" alt="" class="pokemonimagem">
+                    <p class="nome">Não foi possível encontrar o Pokémon</p>
+                </div>
+            `;
+        }
+    }
+
+    async function CriarBoxPokemon() {
+        for(let i=inicio; i<=fim; i++){
+            let pokemon;
+
+            if (cachePokemon[i]) {
+                pokemon = cachePokemon[i];
+            } else {
+                pokemon = await Pokemon(i);
+            }
+
+            const nome = pokemon.name;
+            
+            let imagem;
+            if(shiny){
+                imagem = pokemon.sprites.front_shiny;
+            }
+            else{
+                imagem = pokemon.sprites.front_default;
+            }
+
+
+            div.innerHTML += `<div class="boxPokemon"> 
+                <img src="${imagem}" alt="" class="pokemonimagem"> 
+                <p class="nome">${nome}</p> 
+            </div>`;
+        }
+    }
+    async function Pokemon(id) {
+        if (cachePokemon[id]) {
+            return cachePokemon[id];
+        }
+
+        const resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
+        if (!resposta.ok) {
+            throw new Error("Pokémon não encontrado");
+        }
+        
+        const dados = await resposta.json();
+
+        cachePokemon[id] = dados;
+
+        return dados;
+    }
+
+    function mostrarMais(){
+        inicio = fim+1;
+        fim+=12;
+
+        CriarBoxPokemon();
+    }
+
+    function mostrarShiny(){
+        inicio = 1, fim = 12;
+        div.innerHTML = "";
+        if(!botaoShiny){
+            shiny = true;
+            botaoShiny = true;
+        }
+        else {
+            shiny = false;
+            botaoShiny = false;
+        }
+        CriarBoxPokemon();
+    }
+
+    CriarBoxPokemon();
+
+    //Fazer filtro pra tipos e mais um botão de filtrar por geração
+</script>
+</html>
