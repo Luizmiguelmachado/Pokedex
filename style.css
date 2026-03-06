@@ -6,7 +6,7 @@ body {
 }
 
 /* FUNDO LOGIN/CADASTRO */
-.fundoLoginCadastro, .fundoPrincipal {
+.fundoLoginCadastro, .fundoPrincipal, .fundoBlur{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,9 +19,16 @@ body {
 
 .fundoPrincipal {
     flex-direction: column;
+    justify-content:flex-start;
 }
 
-.caixaDeDialogo, .filtros{
+.fundoBlur{
+    filter: brightness(50%);
+    pointer-events: none;
+    overflow-y: hidden;
+}
+
+.caixaDeDialogo, .filtros, .expandirMais, .caixaDeInformacoes, .caixaDeInformacoes2{
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -36,7 +43,36 @@ body {
     min-height: 180px;
     
 }
-.filtros{
+.caixaDeInformacoes, .caixaDeInformacoes2{
+    display: none;
+    flex-direction: row;
+    gap: 15px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    z-index: 9999;
+
+}
+
+.caixaDeInformacoes2{
+    max-width: 800px;
+    max-height: 500px;
+    overflow-y: auto;
+
+    border-radius: 15px;
+}
+
+.caixaDeInformacoes div{
+    display: flex;
+    flex-direction: column;
+}
+.caixaDeInformacoes {
+    display: flex;
+}
+
+.filtros, .expandirMais{
     flex-direction: row;
     gap: 15px;
     min-height: auto; 
@@ -44,7 +80,7 @@ body {
     max-width: 1000px; 
     justify-content: center; 
     align-items: center; 
-    padding: 0px; 
+    padding: 1%; 
     cursor: pointer;
 }
 
@@ -212,16 +248,111 @@ body {
     margin-bottom: 15px;
 }
 
-.pokemonimagem {
+.pokemonimagem, .pokemonimagem2 {
     width: 180px;
-    height: auto;
+    height: 180px;
     filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4));
 }
 
 .nome {
     color: white;
 }
-
 /*fazer captura de pokemon*/
 
+.imagemPokemon{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+}
 
+.imagemPokemon img{
+    width: 300px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 5%;
+}
+
+.imagemEvolucao{
+    display: flex;
+    min-width: 350px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.imagemEvolucao img{
+    display: flex;
+    width: 100px;
+    height: auto;
+    padding: 5%;
+    border: 2px solid #ccc;
+    border-radius: 100%;
+}
+
+.tipo{
+    display: flex; 
+    flex-direction: row; 
+    gap: 5px;
+}
+
+.tipo1 {
+    width: 100px;
+    height: auto;
+}
+
+.descricoes {
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 2%;
+    width: 300px;
+}
+
+.descricoesSair{
+    display: flex;
+    align-items: center;
+    cursor: pointer; 
+    height: 25px; 
+    border: 2px solid #ccc; 
+    border-radius: 12px; 
+    padding: 1%;
+}
+
+
+/* Modal de Informações (caixaDeInformacoes2) */
+
+@media (max-width: 850px) {
+    .caixaDeInformacoes2 {
+        flex-direction: column; /* Info fica embaixo da imagem no mobile */
+        align-items: center;
+        text-align: center;
+        max-height: 100%;
+    }
+
+
+    .tipo {
+        justify-content: center;
+    }
+
+    .imagemPokemon img {
+        max-width: 200px;
+        max-height: 200px;
+        
+    } 
+}
+
+/* Ajustes para Celulares Pequenos */
+@media (max-width: 480px) {
+
+
+    .caixaDeDialogo {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Cards menores em telas minúsculas */
+        gap: 10px;
+    }
+    
+    .logo {
+        width: 120px; /* Logo um pouco maior no mobile se necessário */
+    }
+}
