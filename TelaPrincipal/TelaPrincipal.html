@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
 </head>
 
 <style>
@@ -56,17 +57,45 @@
         max-height: 200px;
         overflow-y: auto;
     }
+    .btn-outline-warning:hover{
+        color: white;
+    }
+    .imgTipos{
+        width: 150px;
+        height: auto;
+    }
+    
 </style>
 
 <body>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    
-    <nav class="navbar fixed-top minha-navbar">
+
+    <div class="caixaDeInformacoes2">
+        <div class="imagemPokemon">
+            <img src="" alt="" class="pokemonImagem" style="height: 300px;">
+            <div class="imagemEvolucao">
+            </div>
+        </div>
+        
+        <div class="descricoes">
+            <h1 id="nome">NOME</h1>
+            <div class="tipo">
+            </div>
+            <br>
+            <p id="descricao"></p>
+            <p id="altura"></p>
+            <p id="peso"></p>
+        </div>
+        <div class="descricoesSair" onclick="descricoesSair()">
+            <i class="bi bi-x-lg"></i>
+        </div>
+    </div>
+    <nav class="navbar minha-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><img src="Pokédex_logo.png" class="logo"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" style="border: none;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon text-white" style="filter: brightness(0) invert(1);"></span>
             </button>
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
@@ -81,7 +110,7 @@
             </div>
         </div>
     </nav>
-    <div class="fundoPrincipal" style="padding-top: 100px;">
+    <div class="fundoPrincipal">
         <form class="search-box d-flex" id="formBusca" role="search">
             <div class="input-group">
                 <span class="input-group-text bg-white border-0">
@@ -98,51 +127,269 @@
         <div class="filtros">
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group" role="group">
-                    <button type="button" onclick="mostrarTipos()" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" onclick="mostrarTipos()" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Tipo
                     </button class="escolherTipos">
                     <ul class="dropdown-menu">
                     </ul>
                 </div>
             </div>
-            <button onclick="mostrarShiny()">shiny</button>
+            <button type="button" onclick="filtroShiny()" class="btn btn-outline-warning">Shiny</button>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group" role="group">
+                    <button type="button" onclick="mostrarGen()" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Geração
+                    </button class="escolherTipos">
+                    <ul class="dropdown-menu Geracao">
+                    </ul>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-danger" onclick="zerarFiltros()">Zerar Filtros</button>
         </div>
-        <div class="caixaDeDialogo" style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; max-width: 1000px; align-items: center;">
-        </div>
-        <div class="filtros" onclick="mostrarMais()">
+        <div class="caixaDeDialogo" style="
+        display: flex; 
+        flex-direction: row; 
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 1000px; 
+        gap: 7%;
+        align-items: center;"></div>
+        
+        <div class="expandirMais" onclick="mostrarMais()">
             <button type="button" style="width: 100%; all: unset; padding: 2%;">
                 <i class="bi bi-plus-circle" style="font-size: 40px;"></i>
             </button>
         </div>
     </div>
+
 </body>
 
 <script>
     const form = document.getElementById("formBusca");
     const busca = document.getElementById("busca");
     const div = document.querySelector(".caixaDeDialogo");
+    const expandir = document.querySelector(".expandirMais");
+    const divInformacoes = document.querySelector(".caixaDeInformacoes");
+    const fundo = document.querySelector(".fundoPrincipal");
 
     let inicio = 1, fim = 12;
-    let shiny = false, botaoShiny = false;
+    let inicioFiltros = 0, fimFiltros = 11;
 
     const cachePokemon = {};
     let listaPokemons = [];
     let listaTipos = [];
+    let listaSpriteTipos = [];
+    let listaGen = [];
+    
+    let botaoShiny = false;
 
-    async function carregarTipos(){
-        if(listaTipos.length === 0){
-            const resposta =  await fetch("https://pokeapi.co/api/v2/type?limit=100000&offset=0");
-            const dados = await resposta.json();
-            listaTipos = dados.results;
+    document.addEventListener("click", function(event){
+
+        const div = document.querySelector(".caixaDeInformacoes2");
+
+        if(div && !div.contains(event.target)){
+            descricoesSair();
+        }
+
+    });
+
+    function descricoesSair(){
+        const modal = document.querySelector(".caixaDeInformacoes2");
+        modal.style.display = "none";
+        document.querySelector(".fundoPrincipal").classList.remove("fundoBlur");
+        document.querySelector("body").style.overflowY = "scroll";
+    }
+
+    async function mostrarInformacoes(nome){
+        event.stopPropagation();
+        document.querySelector(".fundoPrincipal").classList.add("fundoBlur");
+        document.querySelector("body").style.overflowY = "hidden";
+
+        const container = document.querySelector(".imagemEvolucao");
+        container.innerHTML = "";
+
+        const modal = document.querySelector(".caixaDeInformacoes2");
+        modal.style.display = "flex";
+
+        const resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nome}`);
+        const pokemon = await resposta.json();
+
+        const tipo = document.querySelector(".tipo");
+        tipo.innerHTML = "";
+
+        for(let g=0; g<pokemon.types.length; g++) {
+            let j=0; 
+            for(let i=0; i<listaTipos.length; i++){ 
+                if(listaTipos[i].name===pokemon.types[g].type.name){ 
+                    j=i; 
+                } 
+            } 
+            if(g==0){ 
+                tipo.innerHTML += `
+                    <img src="${listaSpriteTipos[j]}" class="tipo1" alt="">
+                `;
+            }
+            else{
+                tipo.innerHTML += `
+                    <img src="${listaSpriteTipos[j]}" class="tipo1" alt="">
+                `;
+            }
+        }
+
+        const imagem = document.querySelector(".pokemonImagem");
+        imagem.src = addFiltroShiny(pokemon);
+
+        let nome1 = pokemon.name;
+        nome1 = nome1.charAt(0).toUpperCase() + nome1.slice(1);
+        document.getElementById("nome").textContent = nome1;
+
+        document.getElementById("altura").textContent = "Altura: " + pokemon.height/10 + " m";
+        document.getElementById("peso").textContent = "Peso: " + pokemon.weight/10 + " kg";
+
+        // DESCRIÇÃO
+        const resp = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${nome}`);
+        const especie = await resp.json();
+
+        const descricao = especie.flavor_text_entries.find(
+            entry => entry.language.name === "en"
+        );
+
+        document.getElementById("descricao").textContent = descricao ? descricao.flavor_text : "";
+
+        await mostrarEvolucoes(especie.evolution_chain.url, nome);
+    }
+
+    async function mostrarEvolucoes(url, nomeIni){
+        const resposta = await fetch(url);
+        const dados = await resposta.json();
+
+        const container = document.querySelector(".imagemEvolucao");
+        container.innerHTML = "";
+
+        function extrairEvolucoes(chain, lista = []){
+            lista.push(chain.species.name);
+
+            if(chain.evolves_to.length > 0){
+                chain.evolves_to.forEach(evo => {
+                    extrairEvolucoes(evo, lista);
+                });
+            }
+
+            return lista;
+        }
+
+        const nomesEvolucoes = extrairEvolucoes(dados.chain);
+
+        for(const nome of nomesEvolucoes){
+
+            const respostaPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${nome}`);
+            const pokemon = await respostaPokemon.json();
+
+            const img = document.createElement("div");
+            img.style.cursor = "pointer";
+
+            if(nomeIni === nome){
+                img.innerHTML = `
+                    <img style="border: 2px solid red;" src="${pokemon.sprites.front_default}">
+                `;
+            }
+            else{
+                img.innerHTML = `
+                    <img src="${pokemon.sprites.front_default}">
+                `;
+            }
+
+            img.onclick = () => mostrarInformacoes(nome);
+
+            container.appendChild(img);
         }
     }
+
+    function zerarFiltros(){
+        filtro.tipo = null;
+        filtro.shiny = false;
+        filtro.gen = null;
+        div.innerHTML = "";
+        CriarBoxPokemon();
+    }
+
+    async function carregarGen(){
+        if(listaGen.length === 0){
+            const resposta =  await fetch("https://pokeapi.co/api/v2/generation");
+            const dados = await resposta.json();
+            listaGen = dados.results;
+        }
+    }
+    carregarGen();
+
+    function mostrarGen(){
+        const caixaGen = document.querySelector(".Geracao");
+        caixaGen.innerHTML = "";
+        for(let i = 0; i<listaGen.length; i++){
+            caixaGen.innerHTML+= `<li><a class="dropdown-item" onclick="filtroGen('${listaGen[i].name}')" href="#">${listaGen[i].name}</a></li>`;
+        }
+    }
+
+    const filtro = {
+        tipo: null,
+        shiny: false,
+        gen: null,
+    };
+    function filtroTipos(nomeTipo) {
+        filtro.tipo = nomeTipo;
+        atualizarFiltros();
+    }
+    function filtroShiny(){
+        if(!botaoShiny){
+            filtro.shiny = true;
+            botaoShiny = true;
+        }
+        else {
+            filtro.shiny = false;
+            botaoShiny = false;
+        }
+        atualizarFiltros();
+    }
+    function filtroGen(nomeGen) {
+        filtro.gen = nomeGen;
+        atualizarFiltros();
+    }
+
+    async function atualizarFiltros() {
+        div.innerHTML = "";
+        inicioFiltros = 0, fimFiltros = 11;
+        await CriarBoxPokemon();
+    }
+
+    async function carregarTipos() {
+
+        if (listaTipos.length === 0) {
+
+            const resposta = await fetch("https://pokeapi.co/api/v2/type");
+            const dados = await resposta.json();
+
+            listaTipos = dados.results;
+
+            // Busca todos os detalhes em paralelo (MUITO mais rápido)
+            const promessas = listaTipos.map(tipo =>
+                fetch(tipo.url).then(res => res.json())
+            );
+
+            const detalhes = await Promise.all(promessas);
+
+            listaSpriteTipos = detalhes.map(tipo =>
+                tipo.sprites?.["generation-viii"]?.["sword-shield"]?.name_icon || null
+            );
+        }
+    }
+
     carregarTipos();
 
     function mostrarTipos(){
         const caixaTipos = document.querySelector(".dropdown-menu");
         caixaTipos.innerHTML = "";
         for(let i = 0; i<listaTipos.length; i++){
-            caixaTipos.innerHTML+= `<li><a class="dropdown-item" onclick="filtroTipos()" href="#">${listaTipos[i].name}</a></li>`;
+            caixaTipos.innerHTML+= `<li><a class="dropdown-item"onclick="filtroTipos('${listaTipos[i].name}')" href="#"><img class="imgTipos" src="${listaSpriteTipos[i]}" alt=""></a></li>`;
         }
     }
 
@@ -221,14 +468,16 @@
             }
 
             const nome = pokemon.name;
-            const imagem = pokemon.sprites.front_default;
+
+            const imagem = addFiltroShiny(pokemon);;
 
             div.innerHTML = `
-                <div class="boxPokemon">
+                <div class="boxPokemon" onclick = "mostrarInformacoes('${nome}')">
                     <img src="${imagem}" alt="${nome}" class="pokemonimagem">
                     <p class="nome">${nome}</p>
                 </div>
             `;
+            expandir.style.display = "none";
 
         } catch (erro) {
             div.innerHTML = `
@@ -237,36 +486,95 @@
                     <p class="nome">Não foi possível encontrar o Pokémon</p>
                 </div>
             `;
+            expandir.style.display = "none";
         }
     }
 
+    function addFiltroShiny(pokemon){
+        if(filtro.shiny){
+            return pokemon.sprites.front_shiny;    
+        }
+        else{
+            return pokemon.sprites.front_default;
+        }
+    }
     async function CriarBoxPokemon() {
-        for(let i=inicio; i<=fim; i++){
-            let pokemon;
+        expandir.style.display = "flex";
 
-            if (cachePokemon[i]) {
-                pokemon = cachePokemon[i];
-            } else {
-                pokemon = await Pokemon(i);
+        let listaNomes = [];
+
+        if(filtro.gen){
+            const resposta = await fetch(`https://pokeapi.co/api/v2/generation/${filtro.gen}`);
+
+            if (!resposta.ok) {
+                throw new Error("Tipo não encontrado");
+            }
+            const geracao = await resposta.json();
+
+            listaNomes = [];
+
+            for (let i = 0; i < geracao.pokemon_species.length; i++) {
+                listaNomes.push(geracao.pokemon_species[i].name);
             }
 
-            const nome = pokemon.name;
             
-            let imagem;
-            if(shiny){
-                imagem = pokemon.sprites.front_shiny;
+        }
+        if(filtro.tipo){
+            const resposta = await fetch(`https://pokeapi.co/api/v2/type/${filtro.tipo}`);
+
+            if (!resposta.ok) {
+                throw new Error("Tipo não encontrado");
             }
-            else{
-                imagem = pokemon.sprites.front_default;
+            const pokemon = await resposta.json();
+
+            const nomesTipo = pokemon.pokemon.map(p => p.pokemon.name);
+
+            if(listaNomes.length>0){
+                listaNomes = listaNomes.filter(nome =>
+                    nomesTipo.includes(nome)
+                );
+            } else {
+                listaNomes = nomesTipo;
             }
+        }
+
+        if (listaNomes.length === 0) {
+            for (let i = inicio; i <= fim; i++) {
+                const pokemon = await Pokemon(i);
+                renderizarPokemon(pokemon);
+            }
+            return;
+        }
+
+        const pagina = listaNomes.slice(inicioFiltros, fimFiltros+1);
+
+        if (fimFiltros >= listaNomes.length) {
+            expandir.style.display = "none";
+        }
+
+        const promessas = pagina.map(nome =>
+            fetch(`https://pokeapi.co/api/v2/pokemon/${nome}`)
+                .then(res => res.json())
+        );
+
+        const pokemons = await Promise.all(promessas);
 
 
-            div.innerHTML += `<div class="boxPokemon"> 
+        pokemons.forEach(pokemon => renderizarPokemon(pokemon));
+
+    }
+    function renderizarPokemon(pokemon) {
+        const nome = pokemon.name;
+        const imagem = addFiltroShiny(pokemon);
+
+        div.innerHTML += `
+            <div class="boxPokemon" onclick = "mostrarInformacoes('${nome}')"> 
                 <img src="${imagem}" alt="" class="pokemonimagem"> 
                 <p class="nome">${nome}</p> 
-            </div>`;
-        }
+            </div>
+        `;
     }
+
     async function Pokemon(id) {
         if (cachePokemon[id]) {
             return cachePokemon[id];
@@ -286,23 +594,15 @@
     }
 
     function mostrarMais(){
-        inicio = fim+1;
-        fim+=12;
-
-        CriarBoxPokemon();
-    }
-
-    function mostrarShiny(){
-        inicio = 1, fim = 12;
-        div.innerHTML = "";
-        if(!botaoShiny){
-            shiny = true;
-            botaoShiny = true;
+        if(filtro.tipo || filtro.gen){
+            inicioFiltros = fimFiltros + 1;
+            fimFiltros += 12;
         }
-        else {
-            shiny = false;
-            botaoShiny = false;
+        else{
+            inicio = fim + 1;
+            fim += 12;
         }
+
         CriarBoxPokemon();
     }
 
